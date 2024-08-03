@@ -9,7 +9,9 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -24,16 +26,19 @@ export default function Home() {
     setInventory(inventoryList);
   }
 
-  const handleDeleteDialogOpen = async () => {
+  const handleDeleteDialogOpen = async (item) => {
+    setItemToDelete(item);
     setDeleteDialogOpen(true);
   }
 
-  const handleDeleteDialogClose = async () => {
+  const handleDeleteDialogClose = async (item) => {
     setDeleteDialogOpen(false);
+    setItemToDelete(null);
   }
 
   const deleteItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item);
+    if (!itemToDelete) return;
+    const docRef = doc(collection(firestore, 'inventory'), itemToDelete);
 
     try {
       // Delete the document from the collection
@@ -42,6 +47,7 @@ export default function Home() {
       await updateInventory();
       // Close the delete dialog
       setDeleteDialogOpen(false);
+      setItemToDelete(null);
     } catch (error) {
       console.error("Error deleting item: ", error);
     }
@@ -137,15 +143,29 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button 
-      variant="container"
-      onClick={() => {
-        handleOpen()
-      }}
-      sx={{bgcolor:"#2A5E21", color: "white"}}
-      >
-        Add New Item
-      </Button>
+
+      <Stack direction="row" spacing={2}>
+        <Button 
+        variant="container"
+        onClick={() => {
+          handleOpen()
+        }}
+        sx={{bgcolor:"#2A5E21", color: "white"}}
+        >
+          Add New Item
+        </Button>
+
+        <Button 
+        variant="container"
+        onClick={() => {
+          handleOpen()
+        }}
+        sx={{bgcolor:"#2A5E21", color: "white"}}
+        >
+          Search Item
+        </Button>
+      </Stack>
+
       <Box border ='1px solid #333'>
         <Box
         width='800px'
@@ -187,7 +207,7 @@ export default function Home() {
                   removeItem(name)
                 }}
                 sx={{ fontSize: '1.5rem', padding: '4px 4px', minWidth: '32px', height: '32px' }}
-                >-</Button>
+              >-</Button>
 
                 <Typography 
                 variant="h3" 
@@ -202,23 +222,23 @@ export default function Home() {
                 }}
                 sx={{ fontSize: '1.5rem', padding: '4px 4px', minWidth: '32px', height: '32px' }}
                 >+</Button>
-              </Stack>
 
-              {/* Delete confirmation */}
-              <Button variant="contained" onClick={handleDeleteDialogOpen}
-              sx={{ fontSize: '1.1rem', padding: '8px 8px', minWidth: '100px', minHeight: '48px' }}
+                {/* Delete confirmation */}
+                <Button variant="contained" onClick={() => handleDeleteDialogOpen(name)}
+                sx={{ fontSize: '1.1rem', padding: '8px 8px', minWidth: '100px', minHeight: '48px' }}
                 >Delete</Button>
 
-              <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                  <Typography>Are you sure you want to delete this item?</Typography>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleDeleteDialogClose} color="primary">No</Button>
-                  <Button onClick={() => deleteItem(name)} color="secondary">Yes</Button>
-                </DialogActions>
-              </Dialog>
+                <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
+                  <DialogTitle>Confirm Delete</DialogTitle>
+                  <DialogContent>
+                    <Typography>Are you sure you want to delete this item?</Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleDeleteDialogClose} color="primary">No</Button>
+                    <Button onClick={deleteItem} color="secondary">Yes</Button>
+                  </DialogActions>
+                </Dialog>
+              </Stack>
             </Box>
           ))
         }
