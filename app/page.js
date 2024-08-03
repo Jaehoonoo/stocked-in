@@ -178,33 +178,47 @@ export default function Home() {
               textAlign="center">
                 {name.charAt(0).toUpperCase() + name.slice(1)} 
               </Typography>
-              <Stack direction="row" spacing={2}>
+
+              {/* stack container for quantity and associated buttons */}
+              <Stack direction="row" spacing={2} alignItems="center">
+
+              {/* Subtract Item by 1 */}
+              <Button variant="contained" onClick={() => {
+                  removeItem(name)
+                }}
+                sx={{ fontSize: '1.5rem', padding: '4px 4px', minWidth: '32px', height: '32px' }}
+                >-</Button>
+
                 <Typography 
                 variant="h3" 
                 color = "#333" 
                 textAlign="center">
                   {quantity} 
                 </Typography>
+
+                {/* Add Item by 1 */}
                 <Button variant="contained" onClick={() => {
                   addItem(name)
                 }}
-                >Add</Button>
+                sx={{ fontSize: '1.5rem', padding: '4px 4px', minWidth: '32px', height: '32px' }}
+                >+</Button>
+              </Stack>
 
-                {/* Delete confirmation Dialog */}
-                <Button variant="contained" onClick={handleDeleteDialogOpen}
+              {/* Delete confirmation */}
+              <Button variant="contained" onClick={handleDeleteDialogOpen}
+              sx={{ fontSize: '1.1rem', padding: '8px 8px', minWidth: '100px', minHeight: '48px' }}
                 >Delete</Button>
 
-                <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
-                  <DialogTitle>Confirm Delete</DialogTitle>
-                  <DialogContent>
-                    <Typography>Are you sure you want to delete this item?</Typography>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleDeleteDialogClose} color="primary">No</Button>
-                    <Button onClick={() => deleteItem(name)} color="secondary">Yes</Button>
-                  </DialogActions>
-                </Dialog>
-              </Stack>
+              <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                  <Typography>Are you sure you want to delete this item?</Typography>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleDeleteDialogClose} color="primary">No</Button>
+                  <Button onClick={() => deleteItem(name)} color="secondary">Yes</Button>
+                </DialogActions>
+              </Dialog>
             </Box>
           ))
         }
