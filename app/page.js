@@ -9,6 +9,9 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
+  const [itemQuantity, setItemQuantity] = useState(1)
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [itemToDelete, setItemToDelete] = useState(null)
@@ -69,16 +72,27 @@ export default function Home() {
     await updateInventory();
   }
 
-  const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item);
+  // // Simple pluralization function
+  // const pluralize = (word) => {
+  //   if (word.endsWith('s')) {
+  //     return word.substring(0, word.length-1);
+  //   }
+  //   // More rules can be added for complex cases
+  //   return word;
+  // };
+
+  const addItem = async (item, quantity) => {
+    const itemNameLower = item.toLowerCase();
+    
+    const docRef = doc(collection(firestore, 'inventory'), itemNameLower);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const {quantity} = docSnap.data();
-      await setDoc(docRef, {quantity: quantity + 1});
+      const {quantity: existingQuantity} = docSnap.data();
+      await setDoc(docRef, {quantity: existingQuantity + quantity});
     }
     else {
-      await setDoc(docRef, {quantity: 1});
+      await setDoc(docRef, {quantity});
     }
 
     await updateInventory();
@@ -88,8 +102,30 @@ export default function Home() {
     updateInventory();
   }, [])
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => {
+    setItemQuantity(1);
+    setOpen(true);
+  }
+  const handleClose = () => {
+    setItemName('');
+    setOpen(false);
+  }
+
+  {/* Handles adding an item to the inventory */}
+  const handleAddItem = () => {
+    if (itemName.trim() === '' || itemQuantity <= 0) return;
+    addItem(itemName, itemQuantity);
+    setItemName('');
+    setItemQuantity(1);
+    handleClose();
+  }
+
+  const filteredInventory = inventory.filter(({ name }) =>
+    name.toLowerCase().includes(searchQuery)
+  );
+  
+
+
 
   return (
     <Box 
@@ -104,12 +140,13 @@ export default function Home() {
       <Modal
       open={open}
       onClose={handleClose}
-      >
+      > 
         <Box
         position="absolute"
         top="50%"
         left="50%"
         transform="translate(-50%, -50%)"
+        borderRadius="8px"
         width={400}
         boxShadow={24}
         p={4}
@@ -131,14 +168,24 @@ export default function Home() {
             onChange={(e) => {
               setItemName(e.target.value);
             }}
+            placeholder="Name"
             />
+
+          <TextField
+            variant='outlined'
+            fullWidth
+            value={itemQuantity}
+            onChange={(e) => {
+              const value = e.target.value;
+              setItemQuantity(value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1));
+            }}
+            placeholder="Quantity"
+            inputProps={{ min: 1 }}
+            />
+
             <Button
             variant='outlined'
-            onClick={() => {
-              addItem(itemName)
-              setItemName('')
-              handleClose()
-            }}
+            onClick={handleAddItem}
             >Add</Button>
           </Stack>
         </Box>
@@ -146,30 +193,31 @@ export default function Home() {
 
       <Stack direction="row" spacing={2}>
         <Button 
-        variant="container"
+        variant="contained"
         onClick={() => {
           handleOpen()
         }}
-        sx={{bgcolor:"#2A5E21", color: "white"}}
+        sx={{bgcolor:"#2A5E21", color: "white", minWidth: "150px"}}
         >
           Add New Item
         </Button>
 
-        <Button 
-        variant="container"
-        onClick={() => {
-          handleOpen()
-        }}
-        sx={{bgcolor:"#2A5E21", color: "white"}}
-        >
-          Search Item
-        </Button>
+        <TextField
+          variant='outlined'
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          placeholder="Search Item"
+          sx={{ marginBottom: 2 }}
+        />
+
       </Stack>
 
-      <Box border ='1px solid #333'>
+      <Box border ='4px solid #2A5E21' borderRadius="8px">
         <Box
         width='800px'
         height="100px"
+        borderRadius="8px"
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -181,11 +229,12 @@ export default function Home() {
         </Box>
       <Stack width="800px" height="300px" spacing={2} overflow="auto">
         {
-          inventory.map(({name, quantity}) => (
+          filteredInventory.map(({name, quantity}) => (
             <Box 
             key={name} 
             width="100%" 
             minHeight="150px" 
+            borderRadius="8px"
             display="flex"
             alignItems="center"
             justifyContent="space-between"
@@ -218,7 +267,7 @@ export default function Home() {
 
                 {/* Add Item by 1 */}
                 <Button variant="contained" onClick={() => {
-                  addItem(name)
+                  addItem(name, 1)
                 }}
                 sx={{ fontSize: '1.5rem', padding: '4px 4px', minWidth: '32px', height: '32px' }}
                 >+</Button>
