@@ -289,7 +289,7 @@ export default function Home() {
           justifyContent="center"
           sx={{ bgcolor: "#0E4F49", color: "#F8F2ED" }}
         >
-          <Typography variant="h2" color="#F1F2EC">
+          <Typography variant="h2" color="#F1F2EC" sx={{fontSize: {xs: '2rem', sm: '3rem', md: '4rem'}}}>
             Inventory Items
           </Typography>
         </Box>
@@ -334,7 +334,7 @@ export default function Home() {
                 {name.charAt(0).toUpperCase() + name.slice(1)}
               </Typography>
 
-              <Stack direction="row" spacing={2} alignItems="center" marginLeft = '2rem'>
+              <Stack direction="row" spacing={2} alignItems="center" >
                 <Button variant="contained" onClick={() => removeItem(name)}
                   sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, padding: '4px 8px', minWidth: '32px', height: '32px', bgcolor: "#0E4F49", '&:hover': { bgcolor: '#0b3f3a' }, color: '#F1F2EC' }}
                 >-</Button>
