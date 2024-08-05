@@ -5,6 +5,7 @@ import { firestore, auth } from '@/firebase';
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Modal, Typography, Stack, TextField, Button } from '@mui/material';
 import { collection, deleteDoc, doc, getDocs, getDoc, query, setDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
+import cover from '/assets/background.jpg';
 
 export default function Home() {
   const [inventory, setInventory] = useState([]);
@@ -133,6 +134,7 @@ export default function Home() {
     name.toLowerCase().includes(searchQuery)
   );
 
+
   return (
     <Box
       width="100vw"
@@ -142,37 +144,54 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       gap={2}
-      sx={{ p: { xs: 2, sm: 4 }, // Adjust padding based on screen size
-            maxWidth: '100%', // Ensure box doesn't exceed viewport width
+      sx={{ 
+        p: { xs: 2, sm: 4 }, // Adjust padding based on screen size
+        maxWidth: '100%', // Ensure box doesn't exceed viewport width
+        backgroundImage: `url(${cover.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
           }}
     >
       <Modal
         open={open}
         onClose={handleClose}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
+          width={{ xs: '70%', sm: '420px', md: '500px', lg: '500px' }}
+          bgcolor="white"
           borderRadius="8px"
-          width={{ xs: '90vw', sm: '80vw', md: 400 }} // Responsive width
           boxShadow={24}
           p={4}
           display="flex"
           flexDirection="column"
           gap={3}
-          sx={{
-            bgcolor: "white",
-            border: "2px solid black"
-          }}
+          sx={{ position: 'relative' }}
         >
-          <Typography variant="h6">Add Item</Typography>
+          <Typography variant="h6" sx={{color: '#0b3f3a'}}>Add Item</Typography>
           <Stack width="100%" direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               variant='outlined'
               fullWidth
               value={itemName}
+              sx={{
+                marginBottom: 2,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  color: '#333',
+                },
+                maxWidth: { xs: '100%', sm: '300px' } // Responsive maxWidth
+              }}
               onChange={(e) => setItemName(e.target.value)}
               placeholder="Name"
             />
@@ -180,6 +199,24 @@ export default function Home() {
               variant='outlined'
               fullWidth
               value={itemQuantity}
+              sx={{
+                marginBottom: 2,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#0E4F49',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  color: '#333',
+                },
+                maxWidth: { xs: '100%', sm: '300px' } // Responsive maxWidth
+              }}
               onChange={(e) => {
                 const value = e.target.value;
                 setItemQuantity(value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1));
@@ -189,6 +226,11 @@ export default function Home() {
             />
             <Button
               variant='outlined'
+              sx={{
+                color: '#0b3f3a',
+                borderColor: '#0E4F49',
+                '&:hover': {borderColor: '#0b3f3a'}
+              }}
               onClick={handleAddItem}
             >Add</Button>
           </Stack>
@@ -199,7 +241,7 @@ export default function Home() {
         <Button
           variant="contained"
           onClick={handleOpen}
-          sx={{ bgcolor: "#2A5E21", color: "white", minWidth: "150px", '&:hover': { bgcolor: '#06402B' } }}
+          sx={{ bgcolor: "#0E4F49", color: "#F1F2EC", minWidth: "150px", '&:hover': { bgcolor: '#0b3f3a' } }}
         >
           Add New Item
         </Button>
@@ -213,13 +255,13 @@ export default function Home() {
             marginBottom: 2,
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
-                borderColor: '#2A5E21',
+                borderColor: '#0E4F49',
               },
               '&:hover fieldset': {
-                borderColor: '#2A5E21',
+                borderColor: '#0E4F49',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#2A5E21',
+                borderColor: '#0E4F49',
               },
             },
             '& .MuiInputBase-input': {
@@ -232,22 +274,22 @@ export default function Home() {
         <Button
           variant="contained"
           onClick={handleSignOut}
-          sx={{ bgcolor: "#2A5E21", color: "white", minWidth: "150px", '&:hover': { bgcolor: '#06402B' } }}
+          sx={{ bgcolor: "#0E4F49", color: "#F1F2EC", minWidth: "150px", '&:hover': { bgcolor: '#0b3f3a' } }}
         >
           Sign Out
         </Button>
       </Stack>
 
-      <Box border='4px solid #2A5E21' borderRadius="10px" sx={{ width: { xs: '100%', sm: '90%', md: '800px' } }}>
+      <Box border='4px solid #0E4F49' borderRadius="10px" sx={{ width: { xs: '100%', sm: '90%', md: '800px' } }}>
         <Box
           height="100px"
           borderRadius="4px"
           display="flex"
           alignItems="center"
           justifyContent="center"
-          sx={{ bgcolor: "#2A5E21", color: "#F8F2ED" }}
+          sx={{ bgcolor: "#0E4F49", color: "#F8F2ED" }}
         >
-          <Typography variant="h2" color="#F8F2ED">
+          <Typography variant="h2" color="#F1F2EC">
             Inventory Items
           </Typography>
         </Box>
@@ -272,13 +314,13 @@ export default function Home() {
               display="flex"
               alignItems="center"
               justifyContent="space-between"
-              bgcolor="#E8FAEA"
+              bgcolor="#71A48A"
               padding={5}
               sx={{ flexDirection: { xs: 'column', sm: 'row' } }} // Responsive layout
             >
               <Typography
                 variant="h3"
-                color="#333"
+                color="#F1F2EC"
                 textAlign="center"
                 sx={{
                   fontSize: { xs: '1.2rem', sm: '1.2rem', md: '2rem', lg: '2.5rem' },
@@ -294,23 +336,23 @@ export default function Home() {
 
               <Stack direction="row" spacing={2} alignItems="center" marginLeft = '2rem'>
                 <Button variant="contained" onClick={() => removeItem(name)}
-                  sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, padding: '4px 8px', minWidth: '32px', height: '32px', bgcolor: "#2A5E21", '&:hover': { bgcolor: '#06402B' } }}
+                  sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, padding: '4px 8px', minWidth: '32px', height: '32px', bgcolor: "#0E4F49", '&:hover': { bgcolor: '#0b3f3a' }, color: '#F1F2EC' }}
                 >-</Button>
 
                 <Typography
                   variant="h3"
-                  color="#333"
+                  color="#F1F2EC"
                   textAlign="center"
                 >
                   {quantity}
                 </Typography>
 
                 <Button variant="contained" onClick={() => addItem(name, 1)}
-                  sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, padding: '4px 8px', minWidth: '32px', height: '32px', bgcolor: "#2A5E21", '&:hover': { bgcolor: '#06402B' } }}
+                  sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, padding: '4px 8px', minWidth: '32px', height: '32px', bgcolor: "#0E4F49", '&:hover': { bgcolor: '#0b3f3a' }, color: '#F1F2EC' }}
                 >+</Button>
 
                 <Button variant="contained" onClick={() => handleDeleteDialogOpen(name)}
-                  sx={{ fontSize: { xs: '0.9rem', sm: '1.1rem' }, padding: '8px 16px', minWidth: '100px', minHeight: '48px', bgcolor: "#2A5E21", '&:hover': { bgcolor: '#06402B' } }}
+                  sx={{ fontSize: { xs: '0.9rem', sm: '1.1rem' }, padding: '8px 16px', minWidth: '100px', minHeight: '48px', bgcolor: "#0E4F49", '&:hover': { bgcolor: '#0b3f3a' }, color: '#BE4749' }}
                 >Delete</Button>
 
                 <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
@@ -319,8 +361,8 @@ export default function Home() {
                     <Typography>Are you sure you want to delete this item?</Typography>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleDeleteDialogClose} color="primary">No</Button>
-                    <Button onClick={deleteItem} color="secondary">Yes</Button>
+                    <Button onClick={handleDeleteDialogClose} sx={{color: '#0E4F49'}}>No</Button>
+                    <Button onClick={deleteItem} sx={{color: '#BE4749'}}>Yes</Button>
                   </DialogActions>
                 </Dialog>
               </Stack>

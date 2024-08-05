@@ -5,18 +5,19 @@ import { sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailA
 import { auth } from '@/firebase';
 import { Box, TextField, Button, Typography, Paper, Container, Link } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import cover from '/assets/background.jpg';
 
 // Custom TextField with styled focus
 const CustomTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      borderColor: '#c8e6c9', // Default border color
+      borderColor: '#0E4F49', // Default border color
     },
     '&:hover fieldset': {
-      borderColor: '#66bb6a', // Border color on hover
+      borderColor: '#0E4F49', // Border color on hover
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#2e7d32', // Border color when focused
+      borderColor: '#0E4F49', // Border color when focused
     },
   },
   '& .MuiInputBase-input': {
@@ -103,19 +104,35 @@ export default function AuthPage() {
     }
   };
 
+  const home = async () => {
+    router.push('/');
+  }
+
   return (
     <Container
       maxWidth="xs"
       sx={{
+        backgroundImage: `url(${cover.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
+        minWidth: '100vw',
         padding: 2,
       }}
     >
-      <Paper elevation={4} sx={{ padding: 4, borderRadius: 2, width: '100%' }}>
-        <Typography variant="h4" align="center" sx={{ marginBottom: 3, color: '#388e3c' }}>
+      <Paper elevation={4} sx={{ padding: 4, borderRadius: 2, width: {xs: '90%', sm: '75%', md: '60%', lg: "35%"} }}>
+        <Button
+        sx={{
+          bgcolor: "#0E4F49", color: "#F1F2EC", minWidth: "60px", height: '30px', '&:hover': { bgcolor: '#0b3f3a' } 
+        }}
+         onClick={() => home()}
+        >
+          Back
+        </Button>
+        <Typography variant="h4" align="center" sx={{ marginBottom: 3, color: '#0E4F49' }}>
           {isSignUp ? 'Create Your Account' : 'Sign In'}
         </Typography>
         <form onSubmit={handleAuth}>
@@ -151,9 +168,15 @@ export default function AuthPage() {
           <Button
             type="submit"
             variant="contained"
-            color="success" // Fresh green color
+            sx={{
+              bgcolor: "#0E4F49", // Fresh green color
+              color: "#F1F2EC",
+              '&:hover': {
+                bgcolor: '#0C3D38', // Darker green for hover effect
+              },
+              marginTop: 2,
+            }}
             fullWidth
-            sx={{ marginTop: 2 }}
             onClick={() => setButtonClicked(true)} // Set buttonClicked state on click
           >
             {isSignUp ? 'Sign Up' : 'Sign In'}
@@ -171,7 +194,7 @@ export default function AuthPage() {
                   <Link component="button" onClick={() => {
                     setIsSignUp(false)
                     setButtonClicked(false)
-                    }} sx={{ color: '#388e3c', fontWeight: 'bold' }}>
+                    }} sx={{ color: '#0E4F49', fontWeight: 'bold' }}>
                     Sign In
                   </Link>
                 </Typography>
@@ -183,7 +206,7 @@ export default function AuthPage() {
                   <Link component="button" onClick={() => {
                     setIsSignUp(true)
                     setButtonClicked(false)
-                  }} sx={{ color: '#388e3c', fontWeight: 'bold' }}>
+                  }} sx={{ color: '#0E4F49', fontWeight: 'bold' }}>
                     Sign Up
                   </Link>
                 </Typography>
